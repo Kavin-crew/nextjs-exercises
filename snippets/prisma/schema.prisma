@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Snippet{
+model snippet{
   id Int @id @default(autoincrement())
   title String
   code String

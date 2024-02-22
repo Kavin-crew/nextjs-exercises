@@ -34,5 +34,28 @@
 
 // 2. create a form
 // 3. define a Server Action. a function is called once form is submitted
+import { redirect } from "next/navigation";
+import { db } from "@/db";
+
+// when using use server, it will receive a formData as an arguement
+async function createSnippet(formData: FormData) {
+  //This needs to be a server action
+  "use server";
+  //check the user input and check if its valid
+  const title = formData.get("title") as string;
+  const code = formData.get("code") as string;
+  //create a record in the database
+  const snippet = await db.snippet.create({
+    data: {
+      title,
+      code,
+    },
+  });
+  //redirect to root route
+  redirect("/");
+}
+/////////////to call/invoke an action in form
+<form action={createSnippet}></form>;
+
 // 4. in Server Action, validate the users input then create a new snippet
 // 5. redirect the user to homepage, where the snippets is listed
