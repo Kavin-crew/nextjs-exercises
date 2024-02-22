@@ -1,11 +1,12 @@
-import Image from "next/image";
+import Hero from "@/components/hero";
 import reliabilityImg from "/public/reliability.jpg";
 
 export default function ReliabilityPage() {
   return (
-    <div>
-      Reliability Page!
-      <Image src={reliabilityImg} alt="sample image" />
-    </div>
+    <Hero
+      title="Reliability page"
+      imgData={reliabilityImg}
+      imgAlt="alt images"
+    />
   );
 }
