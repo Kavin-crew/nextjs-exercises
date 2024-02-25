@@ -17,7 +17,6 @@ const PropertyCard = ({ property }) => {
     if (rates.nightly) return `${rates.nightly.toLocaleString()}/night`;
   };
 
-  console.log(property);
   return (
     <div className="bg-white rounded-xl shadow-md relative">
       <Image
