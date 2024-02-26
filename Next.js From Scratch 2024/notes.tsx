@@ -25,27 +25,72 @@
 // 5. create a config folder in the root folder
 // 6. create a database.js file inside config folder and add this code:
 
-// import mongoose from "mongoose";
+import mongoose from "mongoose";
 
-// let connected = false;
+let connected = false;
 
-// const connectDB = async () => {
-//   mongoose.set("strictQuery", true);
+const connectDB = async () => {
+  mongoose.set("strictQuery", true);
 
-//   // if database is already connected, don't connect again
-//   if (connected) {
-//     console.log("MongoDB is already connected...");
-//     return;
-//   }
+  // if database is already connected, don't connect again
+  if (connected) {
+    console.log("MongoDB is already connected...");
+    return;
+  }
 
-//   // connect to MongoDB
-//   try {
-//     await mongoose.connect(process.env.MONGODB_URI);
-//     connected = true;
-//     console.log("MongoDB connected...");
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
+  // connect to MongoDB
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    connected = true;
+    console.log("MongoDB connected...");
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-// export default connectDB;
+export default connectDB;
+
+// 7. create an api route, create a folder inside app folder, example properties folder
+// 8. inside properties folder, create a route.jsx file
+import connectDB from "@/config/database";
+
+export const GET = async (request) => {
+  try {
+    await connectDB();
+    return new Response(JSON.stringify({ message: "hello" }), { status: 200 });
+  } catch (error) {
+    console.log(error);
+    return new Response("Someting went wrong", { status: 500 });
+  }
+};
+
+////////////////////
+// Creating model
+////////////////////
+// 1. create a models folder in the root folder
+// 2. create Users.js
+import { Schema, model, models } from "mongoose";
+
+// we use GoogleAuth for this schema
+const UserSchema = new Schema(
+  {
+    email: {
+      type: String,
+      unique: [true, "Email already exists"],
+      required: [true, "Email is required"],
+    },
+    username: {
+      type: String,
+      required: [true, "Username is required"],
+    },
+    image: {
+      type: String,
+    },
+    bookmarks: [{ type: Schema.Types.ObjectId, ref: "Property" }],
+  },
+  { timestamps: true }
+);
+
+const User = models.User || model("User", UserSchema);
+
+export default User;
