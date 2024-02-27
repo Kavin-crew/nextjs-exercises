@@ -103,3 +103,45 @@ export default User;
 // 3. go to api and services>credentials>create credentials>OAuth client ID>configure consent screen>create > supply information, app logo and app domain can be configured during deployment > then save and continue > add or remove scopes, select the ../auth/user.info.email and ../auth/user.info.profile > click save and continue > add users for development
 // 4. go back to credentials > create credentials>OAuth client ID> add Authorized JavaScript origins: http://localhost:3000 and for Authorized redirect URIs: http://localhost:3000/api/auth/callback/google> then press create
 // 5. copy the client ID and secret and add it to our env file just create a variable for GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET
+
+////////////////////
+// Logging in using Google auth
+////////////////////
+// npm i next-auth
+
+// 1. in the app folder, create auth folder>inside auth folder> create [...nextauth] folder > then create route.js file
+// 2. in the root folder > navigate to utils folder > create authOptions.js file
+import GoogleProvider from "next-auth/providers/google";
+
+export const authOptions = {
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
+    }),
+  ],
+  callbacks: {
+    // invoked successfull sign.in
+    async signIn({ profile }) {
+      // 1.connect to the database
+      // 2.check if user exists
+      // 3.if not, the add user to the database
+      // 4.return true to allow sign in
+    },
+    // modifies the session object
+    async session({ session }) {
+      // 1. get user from database
+      // 2. assign the user id to the session
+      // 3. return session
+    },
+  },
+};
+
+// 3. back to our [...nextauth] route.js file
