@@ -236,3 +236,24 @@ useEffect(() => {
       </button>
     ));
 }
+
+////////////////////
+// Using profile image
+////////////////////
+const profileImage = session?.user?.image;
+
+// to fix the error of the image, need to configure next.config.mjs
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        pathname: "**",
+      },
+    ],
+  },
+};
+
+export default nextConfig;
