@@ -94,3 +94,12 @@ const UserSchema = new Schema(
 const User = models.User || model("User", UserSchema);
 
 export default User;
+
+////////////////////
+// Google auth
+////////////////////
+// 1. https://console.cloud.google.com/
+// 2. create a project and select it once done loading
+// 3. go to api and services>credentials>create credentials>OAuth client ID>configure consent screen>create > supply information, app logo and app domain can be configured during deployment > then save and continue > add or remove scopes, select the ../auth/user.info.email and ../auth/user.info.profile > click save and continue > add users for development
+// 4. go back to credentials > create credentials>OAuth client ID> add Authorized JavaScript origins: http://localhost:3000 and for Authorized redirect URIs: http://localhost:3000/api/auth/callback/google> then press create
+// 5. copy the client ID and secret and add it to our env file just create a variable for GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET
