@@ -257,3 +257,13 @@ const nextConfig = {
 };
 
 export default nextConfig;
+
+////////////////////
+// Protect routes
+////////////////////
+// create a middleware.js file in root folder, add the routes you want to protect
+export { default } from "next-auth/middleware";
+
+export const config = {
+  matcher: ["/properties/add", "/profile", "/properties/saved", "/message"],
+};
