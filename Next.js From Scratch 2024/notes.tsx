@@ -145,3 +145,76 @@ export const authOptions = {
 };
 
 // 3. back to our [...nextauth] route.js file
+import { authOptions } from "@/utils/authOptions";
+import NextAuth from "next-auth/next";
+
+const handler = NextAuth(authOptions);
+
+export { handler as GET, handler as POST };
+
+////////////////////
+// Auth Provider
+////////////////////
+// 1. create a component AuthProvider.jsx
+("use client");
+import { SessionProvider } from "next-auth/react";
+
+const AuthProvider = ({ children }) => {
+  return <SessionProvider>{children}</SessionProvider>;
+};
+
+export default AuthProvider;
+
+// 2. wrap the layout into auto provider
+const MainLayout = ({ children }) => {
+  return (
+    <AuthProvider>
+      <html lang="en">
+        <body>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </body>
+      </html>
+    </AuthProvider>
+  );
+};
+
+// 3. add 3 evironment variable for the auth, this will be updated once deployd
+// to generate the NEXTAUTH_SECRET, run the command in terminal:
+// openssl rand -base64 32
+
+// NEXTAUTH_URL = http://localhost:3000
+// NEXTAUTH_URL_INTERNAL = http://localhost:3000
+// NEXTAUTH_SECRET=0oZf+6mbWwjdVi6Uf8eSjpguJ82eaTzJzHh+iPPVA58=
+
+////////////////////
+// Auth Signin button
+////////////////////
+import { useState, useEffect } from "react";
+import { signIn, signOut, useSession, getProviders } from "next-auth/react";
+
+// in the component
+// intialize the session
+const { data: session } = useSession();
+
+const [providers, setProviders] = useState(null);
+
+useEffect(() => {
+  const setAuthProviders = async () => {
+    const res = await getProviders();
+    setProviders(res);
+  };
+
+  setAuthProviders();
+}, []);
+
+/////////// in the button login where we click if we want to login
+{
+  providers &&
+    Object.values(providers).map((provider, index) => (
+      <button onClick={() => signIn(provider.id)} key={index}>
+        Login or Register
+      </button>
+    ));
+}
