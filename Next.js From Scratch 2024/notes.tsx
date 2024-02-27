@@ -111,6 +111,8 @@ export default User;
 
 // 1. in the app folder, create auth folder>inside auth folder> create [...nextauth] folder > then create route.js file
 // 2. in the root folder > navigate to utils folder > create authOptions.js file
+import connectDB from "@/config/database";
+import User from "@/models/Users";
 import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions = {
@@ -131,15 +133,31 @@ export const authOptions = {
     // invoked successfull sign.in
     async signIn({ profile }) {
       // 1.connect to the database
+      await connectDB();
       // 2.check if user exists
+      const userExists = await User.findOne({ email: profile.email });
       // 3.if not, the add user to the database
+      if (!userExists) {
+        // truncate if name is too long into 20 characters
+        const username = profile.name.slice(0, 20);
+
+        await User.create({
+          email: profile.email,
+          username,
+          image: profile.picture,
+        });
+      }
       // 4.return true to allow sign in
+      return true;
     },
     // modifies the session object
     async session({ session }) {
       // 1. get user from database
+      const user = await User.findOne({ email: session.user.email });
       // 2. assign the user id to the session
+      session.user.id = user._id.toString();
       // 3. return session
+      return session;
     },
   },
 };
