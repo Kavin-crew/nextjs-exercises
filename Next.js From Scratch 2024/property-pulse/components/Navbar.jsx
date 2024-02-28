@@ -211,7 +211,7 @@ const Navbar = () => {
                         setIsMobileProfileMenuOpen(false);
                         signOut();
                       }}
-                      className="block px-4 py-2 text-sm text-gray-700"
+                      className="block px-4 py-2 text-sm text-gray-700 w-full text-left"
                       role="menuitem"
                       tabIndex="-1"
                       id="user-menu-item-2"

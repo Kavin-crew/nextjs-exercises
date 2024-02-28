@@ -267,3 +267,12 @@ export { default } from "next-auth/middleware";
 export const config = {
   matcher: ["/properties/add", "/profile", "/properties/saved", "/message"],
 };
+
+////////////////////
+// POST Request
+////////////////////
+<form
+  action="/api/properties"
+  method="POST"
+  encType="multipart/form-data"
+></form>;
