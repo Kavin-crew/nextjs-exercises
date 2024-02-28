@@ -285,11 +285,14 @@ import { authOptions } from "@/utils/authOptions"; //to get the auth option of t
 export const POST = async (request) => {
   try {
     await connectDB();
-    const session = await getServerSession(authOptions);
 
-    if (!session) return new Response("Unathorized", { status: 401 });
+    //custom hook
+    const sessionUser = await getSessionUser();
 
-    const userId = session.user.id;
+    if (!sessionUser || !sessionUser.userId)
+      return new Response("Unathorized, User ID is required", { status: 401 });
+
+    const { userId } = sessionUser;
 
     const formData = await request.formData();
 
@@ -302,25 +305,49 @@ export const POST = async (request) => {
 
     // create propertyData object for database
     const propertyData = {
-      type: formData.get("type"),
       name: formData.get("name"),
       description: formData.get("description"),
       location: {
         street: formData.get("location.street"),
         city: formData.get("location.city"),
-        state: formData.get("location.state"),
-        zipcode: formData.get("location.zipcode"),
       },
       beds: formData.get("beds"),
+      baths: formData.get("baths"),
+      square_feet: formData.get("square_feet"),
       amenities,
-      seller_info: {
-        name: formData.get("seller_info.name"),
-      },
       owner: userId,
-      images,
     };
 
-        // adding all data to Property model
+    // upload image to cloudinary
+    const uploadImagePromises = [];
+
+    for (const image of images) {
+      // to convert image to our code
+      const imageBuffer = await image.arrayBuffer();
+      const imageArray = Array.from(new Uint8Array(imageBuffer));
+      const imageData = Buffer.from(imageArray);
+
+      //convert imageData to base64
+      const imageBase64 = imageData.toString("base64");
+
+      //make request to upload to cloudinary
+      const result = await cloudinary.uploader.upload(
+        `data:image/png;base64,${imageBase64}`,
+        {
+          folder: "propertypulse",
+        }
+      );
+
+      uploadImagePromises.push(result.secure_url);
+
+      // wait for all images to upload
+      const uploadedImages = await Promise.all(uploadImagePromises);
+
+      // Add uploaded images to our propertyData object
+      propertyData.images = uploadedImages;
+    }
+
+    // adding all data to Property model
     const newProperty = new Property(propertyData);
     await newProperty.save();
 
@@ -335,3 +362,49 @@ export const POST = async (request) => {
     return new Response("Failed to add property", { status: 500 });
   }
 };
+
+////////////////////
+// Cloudinary
+////////////////////
+// 1. go to settings > update your desired Product environment cloud name
+// 2. go to access keys > copy the api key and api secret and put it to the .env file
+CLOUDINARY_CLOUD_NAME=kavin-cr
+CLOUDINARY_API_KEY=33156356
+CLOUDINARY_API_SECRET=XKGg6sZz6S1q
+
+// 3. install cloudinary
+// npm i cloudinary
+// 4. go back to cloudinary > nagivate to Media library > create a new folder
+// 5. create a config in our file. go to config folder > create cloudinary.js file
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+export default cloudinary;
+
+////////////// to use the cloudinary
+import cloudinary from "@/config/cloudinary";
+
+// upload image to cloudinary
+const uploadImagePromises = [];
+
+for (const image of images) {
+    // to convert image to our code
+    const imageBuffer = await image.arrayBuffer();
+    const imageArray = Array.from(new Uint8Array(imageBuffer));
+    const imageData = Buffer.from(imageArray);
+
+    //convert imageData to base64
+    const imageBase64 = imageData.toString("base64");
+
+    //make request to upload to cloudinary
+    const result = await cloudinary.uploader.upload(
+    `data:image/png;base64,${imageBase64}`,
+    {
+        folder: "propertypulse",
+    }
+);
