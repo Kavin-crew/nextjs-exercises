@@ -3,27 +3,27 @@ import { useState, useEffect } from "react";
 
 const PropertyAddForm = () => {
   const [fields, setFields] = useState({
-    name: "Apartment in Miami",
-    type: "Apartment",
+    name: "",
+    type: "",
     description: "",
     location: {
       street: "",
-      city: "Boston",
-      state: "MA",
+      city: "",
+      state: "",
       zipcode: "",
     },
-    beds: "2",
-    baths: "1",
-    square_feet: "1500",
+    beds: "",
+    baths: "",
+    square_feet: "",
     amenities: [],
     rates: {
       nightly: "",
-      weekly: "200",
+      weekly: "",
       monthly: "",
     },
     seller_info: {
       name: "",
-      email: "john@gmail.com",
+      email: "",
       phone: "",
     },
     images: [],
@@ -435,6 +435,19 @@ const PropertyAddForm = () => {
         </label>
         <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
           <div className="flex items-center">
+            <label htmlFor="nightly_rate" className="mr-2">
+              Nightly
+            </label>
+            <input
+              type="number"
+              id="nightly_rate"
+              name="rates.nightly"
+              className="border rounded w-full py-2 px-3"
+              value={fields.rates.nightly}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="flex items-center">
             <label htmlFor="weekly_rate" className="mr-2">
               Weekly
             </label>
@@ -457,19 +470,6 @@ const PropertyAddForm = () => {
               name="rates.monthly"
               className="border rounded w-full py-2 px-3"
               value={fields.rates.monthly}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="flex items-center">
-            <label htmlFor="nightly_rate" className="mr-2">
-              Nightly
-            </label>
-            <input
-              type="number"
-              id="nightly_rate"
-              name="rates.nightly"
-              className="border rounded w-full py-2 px-3"
-              value={fields.rates.nightly}
               onChange={handleChange}
             />
           </div>

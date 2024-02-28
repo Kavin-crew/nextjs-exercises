@@ -408,3 +408,20 @@ for (const image of images) {
         folder: "propertypulse",
     }
 );
+
+////////////////////
+// Add Cloudinary to our remote patterns
+////////////////////
+// 1. go to next.config.mjs
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "**",
+      },
+    ],
+  },
+};
