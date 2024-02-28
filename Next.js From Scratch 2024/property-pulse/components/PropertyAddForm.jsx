@@ -28,9 +28,67 @@ const PropertyAddForm = () => {
     images: [],
   });
 
-  const handleChange = () => {};
-  const handleAmenitiesChange = () => {};
-  const handleImageChange = () => {};
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name.includes(".")) {
+      // Nested
+      // need to split for nested fields, example name: location.street
+      // outerKey = location, innerKey = street
+      const [outerKey, innerKey] = name.split(".");
+
+      setFields((prevFields) => ({
+        // Not Nested
+        ...prevFields,
+        // ...prevFields[outerKey] is like spread out the fields of location only
+        [outerKey]: { ...prevFields[outerKey], [innerKey]: value },
+      }));
+    } else {
+      setFields((prevFields) => ({
+        ...prevFields,
+        [name]: value,
+      }));
+    }
+  };
+  const handleAmenitiesChange = (e) => {
+    const { value, checked } = e.target;
+
+    // clone the current array
+    const updatedAmenities = [...fields.amenities];
+
+    if (checked) {
+      // add to the array
+      updatedAmenities.push(value);
+    } else {
+      // remove value from the array
+      const index = updatedAmenities.indexOf(value);
+
+      if (index !== -1) updatedAmenities.splice(index, 1);
+    }
+
+    // update state with the array
+    setFields((prevFields) => ({
+      ...prevFields,
+      amenities: updatedAmenities,
+    }));
+  };
+  const handleImageChange = (e) => {
+    const { files } = e.target;
+
+    // clone the image array
+    const updatedImages = [...fields.images];
+
+    // add new files to the array
+    for (const file of files) {
+      updatedImages.push(file);
+    }
+
+    // update the state with the array
+    setFields((prevFields) => ({
+      ...prevFields,
+      images: updatedImages,
+    }));
+  };
 
   return (
     <form>
@@ -427,7 +485,7 @@ const PropertyAddForm = () => {
         <input
           type="text"
           id="seller_name"
-          name="seller_name."
+          name="seller_info.name"
           className="border rounded w-full py-2 px-3"
           placeholder="Name"
           value={fields.seller_info.name}
