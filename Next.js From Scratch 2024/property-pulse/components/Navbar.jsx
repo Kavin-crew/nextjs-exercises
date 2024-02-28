@@ -189,7 +189,7 @@ const Navbar = () => {
                     <Link
                       onClick={() => setIsMobileProfileMenuOpen(false)}
                       href="/profile"
-                      className="block px-4 py-2 text-sm text-gray-700"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       role="menuitem"
                       tabIndex="-1"
                       id="user-menu-item-0"
@@ -199,7 +199,7 @@ const Navbar = () => {
                     <Link
                       onClick={() => setIsMobileProfileMenuOpen(false)}
                       href="/properties/saved"
-                      className="block px-4 py-2 text-sm text-gray-700"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       role="menuitem"
                       tabIndex="-1"
                       id="user-menu-item-2"
@@ -211,7 +211,7 @@ const Navbar = () => {
                         setIsMobileProfileMenuOpen(false);
                         signOut();
                       }}
-                      className="block px-4 py-2 text-sm text-gray-700 w-full text-left"
+                      className="block px-4 py-2 text-sm text-gray-700 w-full text-left hover:bg-gray-100"
                       role="menuitem"
                       tabIndex="-1"
                       id="user-menu-item-2"
