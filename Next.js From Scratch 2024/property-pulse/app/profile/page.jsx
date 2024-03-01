@@ -35,7 +35,34 @@ const ProfilePage = () => {
     if (session?.user?.id) fetchUserProperties(session.user.id);
   }, [session]);
 
-  const handleDeleteProperty = (id) => {};
+  const handleDeleteProperty = async (propertyId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this property?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(`/api/properties/${propertyId}`, {
+        method: "DELETE",
+      });
+
+      if (res.status === 200) {
+        // remove property from the state
+        const updatedProperties = properties.filter(
+          (property) => property._id !== propertyId
+        );
+
+        setProperties(updatedProperties);
+
+        alert("property deleted");
+      } else {
+        alert("Failed to delete property");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <section className="bg-blue-50">
