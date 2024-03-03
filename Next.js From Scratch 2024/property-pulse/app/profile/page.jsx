@@ -54,6 +54,7 @@ const ProfilePage = () => {
         );
 
         setProperties(updatedProperties);
+        console.log(properties);
 
         alert("property deleted");
       } else {
