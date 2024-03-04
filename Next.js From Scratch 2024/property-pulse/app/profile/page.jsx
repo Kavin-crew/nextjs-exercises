@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 import Link from "next/link";
 import Image from "next/image";
 import Spinner from "@/components/Spinner";
@@ -54,14 +55,13 @@ const ProfilePage = () => {
         );
 
         setProperties(updatedProperties);
-        console.log(properties);
 
-        alert("property deleted");
+        toast.success("Property deleted!");
       } else {
-        alert("Failed to delete property");
+        toast.error("Failed to delete property");
       }
     } catch (error) {
-      console.error(error);
+      toast.error(error);
     }
   };
 

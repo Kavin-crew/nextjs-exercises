@@ -439,9 +439,10 @@ export const DELETE = async (request, { params }) => {
 
     const sessionUser = await getSessionUser();
 
-    // check for session
-    if (!sessionUser || sessionUser.userId)
-      return new Response("UserId is required", { status: 401 });
+    // Check for session
+    if (!sessionUser || !sessionUser.userId) {
+      return new Response("User ID is required", { status: 401 });
+    }
 
     const { userId } = sessionUser;
 
@@ -449,17 +450,35 @@ export const DELETE = async (request, { params }) => {
 
     const property = await Property.findById(propertyId);
 
-    if (!property) return new Response("Property not found", { status: 404 });
+    if (!property) return new Response("Property Not Found", { status: 404 });
 
-    // verify ownership
-    if (property.owner.toString() !== userId)
+    // Verify ownership
+    if (property.owner.toString() !== userId) {
       return new Response("Unauthorized", { status: 401 });
+    }
 
+    // to delete the images in cloudinary
+    // extract public id's from image url in DB
+    const publicIds = property.images.map((imageUrl) => {
+      const parts = imageUrl.split("/");
+      return parts.at(-1).split(".").at(0);
+    });
+
+    // Delete images from Cloudinary
+    if (publicIds.length > 0) {
+      for (let publicId of publicIds) {
+        await cloudinary.uploader.destroy("propertypulse/" + publicId);
+      }
+    }
+
+    // Proceed with property deletion
     await property.deleteOne();
 
-    return new Response("Property deleted", { status: 200 });
+    return new Response("Property Deleted", {
+      status: 200,
+    });
   } catch (error) {
-    console.log(error);
-    return new Response("Someting went wrong", { status: 500 });
+    return new Response("Something Went Wrong", { status: 500 });
   }
 };
+
