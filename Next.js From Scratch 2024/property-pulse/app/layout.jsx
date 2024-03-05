@@ -1,6 +1,7 @@
 import "@/assets/styles/globals.css";
 import AuthProvider from "@/components/AuthProvider";
 import { ToastContainer } from "react-toastify";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "react-toastify/dist/ReactToastify.css";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
@@ -17,7 +18,10 @@ const MainLayout = ({ children }) => {
       <html lang="en">
         <body>
           <Navbar />
-          <main>{children}</main>
+          <main>
+            {children}
+            <SpeedInsights />
+          </main>
           <Footer />
           <ToastContainer />
         </body>
