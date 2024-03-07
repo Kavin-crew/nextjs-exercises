@@ -482,3 +482,19 @@ export const DELETE = async (request, { params }) => {
   }
 };
 
+////////////////////
+// React Share
+////////////////////
+// npm i react-share
+import {
+  FacebookShareButton,
+  FacebookIcon,
+} from "react-share";
+
+<FacebookShareButton
+  url={shareUrl}
+  quote={property.name}
+  hashtag={`#${property.type.replace(/\s/g, "")}ForRent`}
+>
+  <FacebookIcon size={40} round={true} />
+</FacebookShareButton>
