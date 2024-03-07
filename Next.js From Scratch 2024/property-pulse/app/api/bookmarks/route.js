@@ -9,7 +9,7 @@ export const POST = async (request) => {
   try {
     await connectDB();
 
-    const { propertId } = request.json();
+    const { propertyId } = await request.json();
 
     const sessionUser = await getSessionUser();
 
@@ -22,18 +22,18 @@ export const POST = async (request) => {
     const user = await User.findOne({ _id: userId });
 
     // check if property is bookmarked
-    let isBookmarked = user.bookmarks.includes(propertId);
+    let isBookmarked = user.bookmarks.includes(propertyId);
 
     let message;
 
     if (isBookmarked) {
       // if already bookmarked, remove it
-      user.bookmarks.pull(propertId);
+      user.bookmarks.pull(propertyId);
       message = "Bookmark removed successfully";
       isBookmarked = false;
     } else {
       // if not bookmarked, add it
-      user.bookmarks.push(propertId);
+      user.bookmarks.push(propertyId);
       message = "Bookmark added successfully";
       isBookmarked = true;
     }
@@ -41,7 +41,7 @@ export const POST = async (request) => {
     await user.save();
 
     return new Response(JSON.stringify({ message, isBookmarked }), {
-      status: 500,
+      status: 200,
     });
   } catch (error) {
     console.log(error);
