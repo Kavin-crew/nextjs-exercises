@@ -6,7 +6,10 @@ async function fetchProperties() {
     // handle the care where the domain is not available yet
     if (!apiDomain) return [];
 
-    const res = await fetch(`${apiDomain}/properties`, { cache: "no-store" });
+    const res = await fetch(`${apiDomain}/properties`, {
+      cache: "no-store",
+      next: { revalidate: 0 },
+    });
     if (!res.ok) throw new Error("Failed to fetch data");
 
     return res.json();
